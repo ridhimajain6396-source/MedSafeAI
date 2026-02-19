@@ -15,7 +15,7 @@ if st.button("Check"):
 
     # Step 1: Validation
     if medicine.strip() == "":
-        st.error("Please enter a medicine name.")
+        st.error("Please enter a medicine name.")   
 
     else:
         med = medicine.lower()
