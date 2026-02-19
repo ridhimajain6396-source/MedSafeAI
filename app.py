@@ -1,4 +1,8 @@
 import streamlit as st
+import pytesseract
+from PIL import Image
+
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 st.title("MedSafe AI 💊")
 st.write("AI-powered medical safety assistant")
@@ -34,3 +38,26 @@ if st.button("Check"):
 
         # Step 4: Disclaimer
         st.write("⚠ Always consult a doctor for professional medical advice.")
+        # ---------------- OCR SECTION ----------------
+
+st.divider()
+st.subheader("📄 Prescription OCR")
+
+uploaded_file = st.file_uploader(
+    "Upload prescription image",
+    type=["png", "jpg", "jpeg"]
+)
+
+if uploaded_file is not None:
+
+    image = Image.open(uploaded_file)
+
+    st.image(image, caption="Uploaded Prescription", use_column_width=True)
+
+    # Extract text using OCR
+    extracted_text = pytesseract.image_to_string(image)
+
+    st.write("### Extracted Text")
+    st.write(extracted_text)
+
+    st.write("⚠ OCR results may not always be perfect.")
