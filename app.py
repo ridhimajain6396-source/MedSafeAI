@@ -1,3 +1,8 @@
+from ocr.logic.symptom import get_symptom_advice
+from database.med_db import medicine_db
+from ocr.ocr_utils import extract_text
+from ocr.logic.risk_engine import get_risk_output
+
 import streamlit as st
 import pytesseract
 from PIL import Image
@@ -9,24 +14,8 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 st.title("MedSafe AI 💊")
 st.write("AI-powered medical safety assistant")
 
-# ---------------- MEDICINE DATABASE ----------------
-medicine_db = {
-    "paracetamol": {
-        "info": "Generally safe when taken in proper dosage.",
-        "risk": "LOW"
-    },
-    "ibuprofen": {
-        "info": "May cause stomach irritation if taken without food.",
-        "risk": "MEDIUM"
-    },
-    "aspirin": {
-        "info": "Avoid if you have bleeding disorders.",
-        "risk": "HIGH"
-    }
-}
-
 # =====================================================
-# ✅ MANUAL MEDICINE CHECKER
+# ✅ MEDICINE CHECKER
 # =====================================================
 
 st.subheader("🔎 Medicine Safety Checker")
@@ -37,7 +26,6 @@ if st.button("Check"):
 
     if medicine.strip() == "":
         st.error("Please enter a medicine name.")
-
     else:
         med = medicine.lower()
 
@@ -50,13 +38,15 @@ if st.button("Check"):
             st.success(f"{medicine} found in database.")
             st.info(info)
 
-            # Risk display
-            if risk == "LOW":
-                st.success("Risk Level: LOW ✅")
-            elif risk == "MEDIUM":
-                st.warning("Risk Level: MEDIUM ⚠")
+            # use risk engine module
+            status, message = get_risk_output(risk)
+
+            if status == "success":
+                st.success(message)
+            elif status == "warning":
+                st.warning(message)
             else:
-                st.error("Risk Level: HIGH 🚨")
+                st.error(message)
 
         else:
             st.warning("Medicine not found in database.")
@@ -77,12 +67,11 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
 
-    # Show uploaded image
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Prescription", width=400)
 
-    # OCR Extraction
-    extracted_text = pytesseract.image_to_string(image)
+    # ✅ use OCR utility module
+    extracted_text = extract_text(image)
 
     st.write("### Extracted Text")
     st.write(extracted_text)
@@ -103,14 +92,24 @@ if uploaded_file is not None:
         st.success(f"Detected Medicine: {detected_medicine}")
         st.info(info)
 
-        if risk == "LOW":
-            st.success("Risk Level: LOW ✅")
-        elif risk == "MEDIUM":
-            st.warning("Risk Level: MEDIUM ⚠")
+        status, message = get_risk_output(risk)
+
+        if status == "success":
+            st.success(message)
+        elif status == "warning":
+            st.warning(message)
         else:
-            st.error("Risk Level: HIGH 🚨")
+            st.error(message)
 
     else:
         st.warning("No known medicine detected.")
 
     st.write("⚠ OCR results may not always be perfect.")
+    st.divider()
+st.subheader("🩺 Symptom Checker")
+
+symptom = st.text_input("Enter your symptom")
+
+if st.button("Check Symptom"):
+    advice = get_symptom_advice(symptom)
+    st.info(advice)
