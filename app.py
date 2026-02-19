@@ -1,35 +1,59 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import streamlit as st
+from modules.fuzzy_matcher import find_medicine
+from modules.interaction_checker import check_interactions
+from modules.ai_engine import ask_llm
 
-st.title("MedSafe AI 💊")
-st.write("AI-powered medical safety assistant")
+st.set_page_config(page_title="MedSafe AI", layout="wide")
+st.title("🧠 MedSafe AI")
 
-medicine = st.text_input("Enter medicine name")
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Medicine Interaction",
+    "Prescription OCR",
+    "Symptom Guidance",
+    "Emergency Risk"
+])
 
-medicine_db = {
-    "paracetamol": "Generally safe when taken in proper dosage.",
-    "ibuprofen": "May cause stomach irritation if taken without food.",
-    "aspirin": "Avoid if you have bleeding disorders."
-}
+with tab1:
+    st.header("Medicine Interaction Checker")
 
-if st.button("Check"):
+    meds = st.text_area("Enter medicines (comma separated)")
 
-    # Step 1: Validation
-    if medicine.strip() == "":
-        st.error("Please enter a medicine name.")   
+    if st.button("Check"):
+        inputs = [m.strip() for m in meds.split(",")]
+        found = []
 
-    else:
-        med = medicine.lower()
+        for i in inputs:
+            m = find_medicine(i)
+            if m:
+                found.append(m)
 
-        # Step 2: Database Lookup
-        if med in medicine_db:
-            result = medicine_db[med]
+        st.write("Detected Medicines:", found)
 
-            # Step 3: Risk Output
-            st.success(f"{medicine} is found in database.")
-            st.info(result)
+        warnings = check_interactions(found)
 
+        if warnings:
+            st.error("⚠ Interaction Found")
+            for w in warnings:
+                st.write(w)
+
+            explanation = ask_llm(
+                f"Explain simply: {warnings}"
+            )
+            st.info(explanation)
         else:
-            st.warning("Medicine not found in database.")
+            st.success("No major interactions detected")
 
-        # Step 4: Disclaimer
-        st.write("⚠ Always consult a doctor for professional medical advice.")
+with tab2:
+    st.header("Prescription OCR")
+
+
+
+with tab3:
+    st.header("Symptom Guidance")
+
+
+with tab4:
+    st.header("Emergency Risk Predictor")

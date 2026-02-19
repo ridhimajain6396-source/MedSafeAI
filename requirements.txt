@@ -1,5 +1,10 @@
 streamlit
-pillow
 pytesseract
+Pillow
 rapidfuzz
-openai
+ollama
+python-dotenv
+pandas
+requests
+opencv-python-headless
+numpy

@@ -1,0 +1,12 @@
+[
+  {
+    "drug1": "Ibuprofen",
+    "drug2": "Azithromycin",
+    "warning": "May increase stomach irritation risk"
+  },
+  {
+    "drug1": "Paracetamol",
+    "drug2": "Combiflam",
+    "warning": "Duplicate paracetamol overdose risk"
+  }
+]

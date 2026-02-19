@@ -1,0 +1,9 @@
+[
+  {"name": "Paracetamol", "salt": "Acetaminophen"},
+  {"name": "Crocin", "salt": "Acetaminophen"},
+  {"name": "Azithromycin", "salt": "Azithromycin"},
+  {"name": "Augmentin 625", "salt": "Amoxicillin + Clavulanic Acid"},
+  {"name": "Pantocid", "salt": "Pantoprazole"},
+  {"name": "Ibuprofen", "salt": "Ibuprofen"},
+  {"name": "Combiflam", "salt": "Ibuprofen + Paracetamol"}
+]
