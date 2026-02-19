@@ -6,6 +6,7 @@ from modules.fuzzy_matcher import find_medicine
 from modules.interaction_checker import check_interactions
 from modules.ai_engine import ask_llm
 from modules.ocr_processor import extract_text
+from modules.risk_engine import calculate_risk
 
 st.set_page_config(page_title="MedSafe AI", layout="wide")
 st.title("🧠 MedSafe AI")
@@ -81,3 +82,9 @@ with tab3:
 
 with tab4:
     st.header("Emergency Risk Predictor")
+    s = st.text_area("Enter emergency symptoms")
+
+    if st.button("Check Risk"):
+        risk = calculate_risk(s)
+        st.write(risk)
+
