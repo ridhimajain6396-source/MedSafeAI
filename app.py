@@ -5,6 +5,7 @@ import streamlit as st
 from modules.fuzzy_matcher import find_medicine
 from modules.interaction_checker import check_interactions
 from modules.ai_engine import ask_llm
+from modules.ocr_processor import extract_text
 
 st.set_page_config(page_title="MedSafe AI", layout="wide")
 st.title("🧠 MedSafe AI")
@@ -48,7 +49,22 @@ with tab1:
 
 with tab2:
     st.header("Prescription OCR")
+    img = st.file_uploader("Upload prescription", type=["png", "jpg", "jpeg"])
 
+    if img is not None:
+        st.image(img)
+
+        text = extract_text(img)
+
+        if text.startswith("OCR Error"):
+            st.error(text)
+        else:
+            st.text_area("Extracted Text", text, height=200)
+
+            summary = ask_llm(
+                f"Extract medicine names from the following prescription text and return them clearly:\n{text}"
+            )
+            st.info(summary)
 
 
 with tab3:
