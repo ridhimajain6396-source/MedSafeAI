@@ -69,6 +69,14 @@ with tab2:
 
 with tab3:
     st.header("Symptom Guidance")
+    symptoms = st.text_area("Describe symptoms")
+
+    if st.button("Analyze"):
+        response = ask_llm(
+            f"Provide safe health guidance (no diagnosis): {symptoms}"
+        )
+        st.write(response)
+
 
 
 with tab4:
