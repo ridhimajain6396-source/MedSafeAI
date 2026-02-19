@@ -5,7 +5,6 @@ st.write("AI-powered medical safety assistant")
 
 medicine = st.text_input("Enter medicine name")
 
-# Fake medicine database
 medicine_db = {
     "paracetamol": "Generally safe when taken in proper dosage.",
     "ibuprofen": "May cause stomach irritation if taken without food.",
